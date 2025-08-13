@@ -1,12 +1,9 @@
 package com.gea.app.shared.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -14,7 +11,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ApiResponse <T> {
+public class ApiResponse<T> {
 
     @JsonProperty("isSuccess")
     private boolean isSuccess;
@@ -25,7 +22,6 @@ public class ApiResponse <T> {
     public ApiResponse() {
         ZoneId jakartaZone = ZoneId.of("Asia/Jakarta");
         ZonedDateTime jakartaTime = ZonedDateTime.now(jakartaZone);
-
         this.timestamp = Date.from(jakartaTime.toInstant());
     }
 
@@ -34,7 +30,6 @@ public class ApiResponse <T> {
         this.isSuccess = isSuccess;
         this.data = data;
         this.errors = null;
-
     }
 
     public ApiResponse(boolean isSuccess, List<?> errors) {
@@ -43,5 +38,4 @@ public class ApiResponse <T> {
         this.errors = errors;
         this.data = null;
     }
-
 }
