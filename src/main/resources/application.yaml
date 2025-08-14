@@ -20,7 +20,10 @@ spring:
       hibernate:
         format_sql: true
         default_schema: mining
-
+  
+  jackson:
+    time-zone: Asia/Jakarta
+    
 app:
   prifix: api
   jwt:
