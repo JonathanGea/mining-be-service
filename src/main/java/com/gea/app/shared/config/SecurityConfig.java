@@ -69,12 +69,25 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler)           // 403 -> ApiResponse
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                        // Swagger/OpenAPI
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        // Preflight CORS (opsional tapi disarankan)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Sisanya wajib auth
                         .anyRequest().authenticated()
                 )
+                // Di luar authorize() chain:
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
+
 }
