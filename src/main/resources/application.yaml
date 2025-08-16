@@ -2,11 +2,11 @@ spring:
   application:
     name: app
   datasource:
-    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
-    username: postgres.shdxsftyxxndtpqmmtcs
-    password: vBLR4VsOvDnILiOE
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    schema: mining
+    schema: ${DATABASE_SCHEMA}
 
     hikari:
       connection-timeout: 30000
@@ -19,7 +19,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        default_schema: mining
+        default_schema: ${DATABASE_SCHEMA}
   
   jackson:
     time-zone: Asia/Jakarta
