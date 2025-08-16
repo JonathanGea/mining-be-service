@@ -20,12 +20,13 @@ spring:
       hibernate:
         format_sql: true
         default_schema: ${DATABASE_SCHEMA}
-  
+
   jackson:
     time-zone: Asia/Jakarta
-    
+
 app:
   prifix: api
+  api-base-url: ${URL_DOMAIN}
   jwt:
     secret: "change-this-super-long-secret-string-please-yeee-ichangeit"
     expiration: 3600000 # 1 jam (ms)
