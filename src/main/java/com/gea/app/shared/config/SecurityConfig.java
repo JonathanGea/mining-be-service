@@ -71,11 +71,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
 
-        // Izinkan Capacitor & lokal dev
+        // Tambahkan SEMUA origin yang mungkin dipakai saat dev di Capacitor
         cfg.setAllowedOriginPatterns(List.of(
                 "capacitor://localhost",
                 "ionic://localhost",
+                "https://localhost",
+                "https://localhost:*",
+                "http://localhost",
                 "http://localhost:*",
+                "http://127.0.0.1",
                 "http://127.0.0.1:*"
         ));
 
@@ -89,6 +93,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
