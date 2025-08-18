@@ -3,7 +3,7 @@ package com.gea.app.auth;
 import com.gea.app.auth.dto.AuthResponse;
 import com.gea.app.auth.dto.LoginRequest;
 import com.gea.app.auth.dto.RegisterRequest;
-import com.gea.app.shared.util.JwtService;
+import com.gea.app._shared.util.JwtService;
 import com.gea.app.user.enum_.Role;
 import com.gea.app.user.entity.User;
 import com.gea.app.user.UserRepository;

@@ -1,4 +1,4 @@
-package com.gea.app.shared.config;
+package com.gea.app._shared.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package com.gea.app.auth.filter;
 
-import com.gea.app.shared.util.JwtService;
+import com.gea.app._shared.util.JwtService;
 import com.gea.app.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

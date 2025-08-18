@@ -1,4 +1,4 @@
-package com.gea.app.shared.config;
+package com.gea.app._shared.config;
 
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.*;

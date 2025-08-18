@@ -1,6 +1,6 @@
 package com.gea.app.user;
 
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import com.gea.app.user.dto.UserResponse;
 import com.gea.app.user.entity.User;
 import com.gea.app.user.UserService;

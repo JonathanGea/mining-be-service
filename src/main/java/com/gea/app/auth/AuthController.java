@@ -4,7 +4,7 @@ import com.gea.app.auth.dto.AuthResponse;
 import com.gea.app.auth.dto.LoginRequest;
 import com.gea.app.auth.dto.RegisterRequest;
 import com.gea.app.auth.AuthService;
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

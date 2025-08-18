@@ -1,8 +1,8 @@
-package com.gea.app.shared.config;
+package com.gea.app._shared.config;
 
 import com.gea.app.auth.filter.JwtAuthenticationFilter;
-import com.gea.app.shared.security.RestAccessDeniedHandler;
-import com.gea.app.shared.security.RestAuthenticationEntryPoint;
+import com.gea.app._shared.security.RestAccessDeniedHandler;
+import com.gea.app._shared.security.RestAuthenticationEntryPoint;
 import com.gea.app.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

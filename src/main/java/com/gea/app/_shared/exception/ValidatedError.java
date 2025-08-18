@@ -1,8 +1,7 @@
-package com.gea.app.shared.exception;
+package com.gea.app._shared.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @AllArgsConstructor

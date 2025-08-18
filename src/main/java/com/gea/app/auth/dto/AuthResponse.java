@@ -1,5 +1,8 @@
 package com.gea.app.auth.dto;
 
+import lombok.Getter;
+
+@Getter
 public class AuthResponse {
     private final String accessToken;
     private final String tokenType;
@@ -14,6 +17,4 @@ public class AuthResponse {
         this(accessToken, "Bearer");
     }
 
-    public String getAccessToken() { return accessToken; }
-    public String getTokenType() { return tokenType; }
 }

@@ -3,7 +3,7 @@ package com.gea.app.operatorprofile;
 import com.gea.app.operatorprofile.dto.OperatorProfileCreateRequestDTO;
 import com.gea.app.operatorprofile.dto.OperatorProfileResponseDTO;
 import com.gea.app.operatorprofile.dto.OperatorProfileWrapper;
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

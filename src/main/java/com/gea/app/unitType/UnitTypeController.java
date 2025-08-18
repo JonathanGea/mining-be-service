@@ -1,7 +1,7 @@
 package com.gea.app.unitType;
 
 
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import com.gea.app.unitType.dto.UnitTypeCreateRequestDTO;
 import com.gea.app.unitType.dto.UnitTypeResponseDTO;
 import com.gea.app.unitType.dto.UnitTypesWrapper;

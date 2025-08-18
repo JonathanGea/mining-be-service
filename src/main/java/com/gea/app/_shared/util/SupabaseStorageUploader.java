@@ -1,4 +1,4 @@
-package com.gea.app.shared.util;
+package com.gea.app._shared.util;
 
 //import io.supabase.client.SupabaseClient;
 import org.springframework.stereotype.Component;

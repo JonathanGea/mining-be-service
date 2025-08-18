@@ -1,4 +1,4 @@
-package com.gea.app.shared.model.dto;
+package com.gea.app._shared.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

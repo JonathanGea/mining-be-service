@@ -1,6 +1,6 @@
-package com.gea.app.shared.exception;
+package com.gea.app._shared.exception;
 
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

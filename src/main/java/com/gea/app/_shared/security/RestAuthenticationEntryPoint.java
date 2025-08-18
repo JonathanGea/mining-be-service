@@ -1,13 +1,13 @@
-package com.gea.app.shared.security;
+package com.gea.app._shared.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,20 +15,20 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class RestAccessDeniedHandler implements AccessDeniedHandler {
+public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         var body = new ApiResponse<>(
                 false,
                 List.of(
-                        "Forbidden: you don't have permission to access this resource",
+                        "Unauthorized: missing or invalid authentication",
                         request.getMethod() + " " + request.getRequestURI()
                 )
         );
