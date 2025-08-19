@@ -29,19 +29,22 @@ public class AuthService {
     private final ModelMapper modelMapper;
 
     public AuthResponse register(RegisterRequest req) {
-        if (userRepository.existsByEmail(req.getEmail())) {
+        if (userRepository.existsByUsername(req.getUsername())) {
             throw new RuntimeException("Email already registered");
         }
+        if (userRepository.existsByUsername(req.getUsername())) {
+            throw new RuntimeException("Username already taken");
+        }
 
-        var user = User.builder()
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(Role.USER)
-                .build();
+        // map DTO -> Entity pakai ModelMapper (org.modelmapper.ModelMapper)
+        User user = modelMapper.map(req, User.class);
+
+        // handle field khusus yg tak boleh plain-copy
+        user.setPassword(passwordEncoder.encode(req.getPassword())); // encode manual
+        user.setRole(Role.USER);                                     // default role
 
         var saved = userRepository.save(user);
 
-        // Ambil ulang dengan fetch-join supaya unit ikut (meski null tetap aman)
         var hydrated = userRepository.findByIdWithUnit(saved.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found after register"));
 
@@ -55,10 +58,10 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest req) {
-        var authToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
+        var authToken = new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword());
         authenticationManager.authenticate(authToken);
 
-        var user = userRepository.findByEmailWithUnit(req.getEmail())
+        var user = userRepository.findByUsernameWithUnit(req.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         String token = jwtService.generateToken(
@@ -70,3 +73,4 @@ public class AuthService {
         return new AuthResponse(token, userDto);
     }
 }
+
