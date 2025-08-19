@@ -25,12 +25,10 @@ public class HelpRequest {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    // User yang meminta bantuan
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
 
-    // Unit yang menjadi subjek permintaan bantuan
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id", nullable = false)
     private Unit targetUnit;
@@ -39,7 +37,7 @@ public class HelpRequest {
     private String details;
 
     @Column(name = "status", nullable = false)
-    private String status; // Contoh: "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"
+    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

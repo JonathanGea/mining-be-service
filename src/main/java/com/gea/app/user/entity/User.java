@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.gea.app.unit.entity.Unit;
 import com.gea.app.user.enum_.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Unit unit;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
