@@ -1,4 +1,4 @@
-package com.gea.app.shared.util;
+package com.gea.app._shared.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -3,7 +3,7 @@ package com.gea.app.helprequest;
 import com.gea.app.helprequest.dto.HelpRequestCreateRequestDTO;
 import com.gea.app.helprequest.dto.HelpRequestResponseDTO;
 import com.gea.app.helprequest.dto.HelpRequestWrapper;
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;

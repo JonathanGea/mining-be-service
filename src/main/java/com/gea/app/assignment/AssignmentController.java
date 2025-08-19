@@ -3,7 +3,7 @@ package com.gea.app.assignment;
 import com.gea.app.assignment.dto.AssignmentCreateRequestDTO;
 import com.gea.app.assignment.dto.AssignmentResponseDTO;
 import com.gea.app.assignment.dto.AssignmentWrapper;
-import com.gea.app.shared.model.dto.ApiResponse;
+import com.gea.app._shared.model.dto.ApiResponse;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
