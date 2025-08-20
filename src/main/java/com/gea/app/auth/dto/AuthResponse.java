@@ -7,13 +7,13 @@ import lombok.Getter;
 public class AuthResponse {
     private final String accessToken;
     private final String tokenType;
-    private final UserResponse userResponse;
+    private final UserResponse user;
 
 
     public AuthResponse(String accessToken, String tokenType, UserResponse userResponse) {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
-        this.userResponse = userResponse;
+        this.user = userResponse;
     }
 
     public AuthResponse(String accessToken, UserResponse user) {
