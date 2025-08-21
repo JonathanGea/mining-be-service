@@ -4,7 +4,8 @@ import com.gea.app.helpRequest.dto.HelpRequestCreateRequestDTO;
 import com.gea.app.helpRequest.dto.HelpRequestResponseDTO;
 import com.gea.app.helpRequest.entity.HelpRequest;
 import com.gea.app.unit.UnitRepository;
-import com.gea.app.unit.entity.Unit;
+import com.gea.app.unitType.UnitTypeRepository;
+import com.gea.app.unitType.entity.UnitType;
 import com.gea.app.user.UserRepository;
 import com.gea.app.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,15 +23,15 @@ public class HelpRequestService {
 
     private final HelpRequestRepository helpRequestRepository;
     private final UserRepository userRepository;
-    private final UnitRepository unitRepository;
+    private final UnitTypeRepository unitTypeRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     public HelpRequestService(HelpRequestRepository helpRequestRepository, UserRepository userRepository,
-            UnitRepository unitRepository, ModelMapper modelMapper) {
+                              UnitTypeRepository unitTypeRepository, ModelMapper modelMapper) {
         this.helpRequestRepository = helpRequestRepository;
         this.userRepository = userRepository;
-        this.unitRepository = unitRepository;
+        this.unitTypeRepository = unitTypeRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -48,10 +49,7 @@ public class HelpRequestService {
 
     @Transactional
     public HelpRequestResponseDTO createHelpRequest(HelpRequestCreateRequestDTO createRequestDTO) {
-        System.out.println("[LOG] Mulai proses createHelpRequest untuk requesterId: "
-                + createRequestDTO.getRequesterId() + ", unitId: " + createRequestDTO.getUnitTypeId());
 
-        // Validasi keberadaan user dan unit
         User requester = (User) userRepository.findById(createRequestDTO.getRequesterId())
                 .orElseThrow(() -> {
                     System.out.println(
@@ -61,17 +59,17 @@ public class HelpRequestService {
                 });
         System.out.println("[LOG] User ditemukan: " + requester.getId());
 
-        Unit targetUnit = unitRepository.findById(createRequestDTO.getUnitTypeId())
+        UnitType TargetUnitType = unitTypeRepository.findById(createRequestDTO.getTargetUnitTypeId())
                 .orElseThrow(() -> {
-                    System.out.println("[ERROR] Unit dengan id " + createRequestDTO.getUnitTypeId() + " tidak ditemukan");
-                    return new EntityNotFoundException("Unit with id " + createRequestDTO.getUnitTypeId() + " not found");
+                    System.out.println("[ERROR] Unit dengan id " + createRequestDTO.getTargetUnitTypeId() + " tidak ditemukan");
+                    return new EntityNotFoundException("Unit with id " + createRequestDTO.getTargetUnitTypeId() + " not found");
                 });
-        System.out.println("[LOG] Unit ditemukan: " + targetUnit.getId());
+        System.out.println("[LOG] Unit ditemukan: " + TargetUnitType.getId());
 
         // Buat entitas baru
         HelpRequest newHelpRequest = HelpRequest.builder()
                 .requester(requester)
-                .targetUnit(targetUnit)
+                .targetUnitType(TargetUnitType)
                 .details(createRequestDTO.getDetails())
                 .status("OPEN") // Set status awal secara otomatis
                 .build();

@@ -12,7 +12,7 @@ public class HelpRequestCreateRequestDTO {
     private UUID requesterId;
 
     @NotNull(message = "unitTypeId cannot be null")
-    private UUID unitTypeId;
+    private UUID targetUnitTypeId;
 
     @NotBlank(message = "Details cannot be blank")
     private String details;
