@@ -1,4 +1,4 @@
-package com.gea.app.helprequest.dto;
+package com.gea.app.helpRequest.dto;
 
 import com.gea.app.unit.dto.UnitResponseDTO;
 import com.gea.app.user.dto.UserResponse;

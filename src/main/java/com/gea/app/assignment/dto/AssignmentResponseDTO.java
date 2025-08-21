@@ -1,6 +1,6 @@
 package com.gea.app.assignment.dto;
 
-import com.gea.app.helprequest.dto.HelpRequestResponseDTO;
+import com.gea.app.helpRequest.dto.HelpRequestResponseDTO;
 import com.gea.app.user.dto.UserResponse;
 import lombok.Data;
 

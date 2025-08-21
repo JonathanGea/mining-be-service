@@ -1,8 +1,8 @@
-package com.gea.app.helprequest;
+package com.gea.app.helpRequest;
 
-import com.gea.app.helprequest.dto.HelpRequestCreateRequestDTO;
-import com.gea.app.helprequest.dto.HelpRequestResponseDTO;
-import com.gea.app.helprequest.entity.HelpRequest;
+import com.gea.app.helpRequest.dto.HelpRequestCreateRequestDTO;
+import com.gea.app.helpRequest.dto.HelpRequestResponseDTO;
+import com.gea.app.helpRequest.entity.HelpRequest;
 import com.gea.app.unit.UnitRepository;
 import com.gea.app.unit.entity.Unit;
 import com.gea.app.user.UserRepository;
@@ -49,7 +49,7 @@ public class HelpRequestService {
     @Transactional
     public HelpRequestResponseDTO createHelpRequest(HelpRequestCreateRequestDTO createRequestDTO) {
         System.out.println("[LOG] Mulai proses createHelpRequest untuk requesterId: "
-                + createRequestDTO.getRequesterId() + ", unitId: " + createRequestDTO.getUnitId());
+                + createRequestDTO.getRequesterId() + ", unitId: " + createRequestDTO.getUnitTypeId());
 
         // Validasi keberadaan user dan unit
         User requester = (User) userRepository.findById(createRequestDTO.getRequesterId())
@@ -61,10 +61,10 @@ public class HelpRequestService {
                 });
         System.out.println("[LOG] User ditemukan: " + requester.getId());
 
-        Unit targetUnit = unitRepository.findById(createRequestDTO.getUnitId())
+        Unit targetUnit = unitRepository.findById(createRequestDTO.getUnitTypeId())
                 .orElseThrow(() -> {
-                    System.out.println("[ERROR] Unit dengan id " + createRequestDTO.getUnitId() + " tidak ditemukan");
-                    return new EntityNotFoundException("Unit with id " + createRequestDTO.getUnitId() + " not found");
+                    System.out.println("[ERROR] Unit dengan id " + createRequestDTO.getUnitTypeId() + " tidak ditemukan");
+                    return new EntityNotFoundException("Unit with id " + createRequestDTO.getUnitTypeId() + " not found");
                 });
         System.out.println("[LOG] Unit ditemukan: " + targetUnit.getId());
 
