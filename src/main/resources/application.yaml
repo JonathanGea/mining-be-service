@@ -29,7 +29,7 @@ app:
   api-base-url: ${URL_DOMAIN}
   jwt:
     secret: "change-this-super-long-secret-string-please-yeee-ichangeit"
-    expiration: 3600000 # 1 jam (ms)
+    expiration: 86400000  #  jam (ms)
 supabase:
   url: ${SUPABASE_URL}
   key: ${SUPABASE_ANON_KEY}
