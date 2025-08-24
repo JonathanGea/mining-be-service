@@ -10,6 +10,7 @@ import com.gea.app.user.UserRepository;
 import com.gea.app.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,17 @@ public class HelpRequestService {
     private final UserRepository userRepository;
     private final UnitTypeRepository unitTypeRepository;
     private final ModelMapper modelMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public HelpRequestService(HelpRequestRepository helpRequestRepository, UserRepository userRepository,
-                              UnitTypeRepository unitTypeRepository, ModelMapper modelMapper) {
+                              UnitTypeRepository unitTypeRepository, ModelMapper modelMapper,
+                              SimpMessagingTemplate messagingTemplate) {
         this.helpRequestRepository = helpRequestRepository;
         this.userRepository = userRepository;
         this.unitTypeRepository = unitTypeRepository;
         this.modelMapper = modelMapper;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public List<HelpRequestResponseDTO> getAllHelpRequests() {
@@ -80,6 +84,16 @@ public class HelpRequestService {
 
         HelpRequestResponseDTO responseDTO = modelMapper.map(savedRequest, HelpRequestResponseDTO.class);
         System.out.println("[LOG] Mapping ke HelpRequestResponseDTO selesai");
+
+        try {
+            var unitTypeId = savedRequest.getTargetUnitType().getId();
+            String destination = "/topic/help-requests/" + unitTypeId;
+            System.out.println("[WS] broadcasting to " + destination);
+            // kirim payload DTO ke subscriber sesuai unit type
+            messagingTemplate.convertAndSend(destination, responseDTO);
+        } catch (Exception e) {
+            System.out.println("[WS][WARN] gagal kirim notifikasi: " + e.getMessage());
+        }
 
         return responseDTO;
     }

@@ -106,6 +106,10 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                        // Static test page for WS
+                        .requestMatchers(HttpMethod.GET, "/ws-test.html").permitAll()
+                        // WebSocket handshake + STOMP endpoints
+                        .requestMatchers("/ws", "/ws/**").permitAll()
                         // Swagger/OpenAPI
                         .requestMatchers(
                                 "/v3/api-docs/**",
