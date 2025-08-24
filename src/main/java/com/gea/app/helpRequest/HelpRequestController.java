@@ -1,8 +1,8 @@
-package com.gea.app.helprequest;
+package com.gea.app.helpRequest;
 
-import com.gea.app.helprequest.dto.HelpRequestCreateRequestDTO;
-import com.gea.app.helprequest.dto.HelpRequestResponseDTO;
-import com.gea.app.helprequest.dto.HelpRequestWrapper;
+import com.gea.app.helpRequest.dto.HelpRequestCreateRequestDTO;
+import com.gea.app.helpRequest.dto.HelpRequestResponseDTO;
+import com.gea.app.helpRequest.dto.HelpRequestWrapper;
 import com.gea.app._shared.model.dto.ApiResponse;
 
 import jakarta.persistence.EntityNotFoundException;

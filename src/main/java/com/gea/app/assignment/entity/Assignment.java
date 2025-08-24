@@ -1,6 +1,6 @@
 package com.gea.app.assignment.entity;
 
-import com.gea.app.helprequest.entity.HelpRequest;
+import com.gea.app.helpRequest.entity.HelpRequest;
 import com.gea.app.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

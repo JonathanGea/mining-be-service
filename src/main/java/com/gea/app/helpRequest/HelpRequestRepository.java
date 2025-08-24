@@ -1,6 +1,6 @@
-package com.gea.app.helprequest;
+package com.gea.app.helpRequest;
 
-import com.gea.app.helprequest.entity.HelpRequest;
+import com.gea.app.helpRequest.entity.HelpRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.UUID;

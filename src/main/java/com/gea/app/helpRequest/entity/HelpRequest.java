@@ -1,6 +1,6 @@
-package com.gea.app.helprequest.entity;
+package com.gea.app.helpRequest.entity;
 
-import com.gea.app.unit.entity.Unit;
+import com.gea.app.unitType.entity.UnitType;
 import com.gea.app.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,8 +30,8 @@ public class HelpRequest {
     private User requester;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit targetUnit;
+    @JoinColumn(name = "target_unit_type", nullable = false)
+    private UnitType targetUnitType;
 
     @Column(name = "details", nullable = false, columnDefinition = "TEXT")
     private String details;

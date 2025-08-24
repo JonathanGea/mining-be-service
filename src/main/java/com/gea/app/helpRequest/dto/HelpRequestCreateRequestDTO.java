@@ -1,4 +1,4 @@
-package com.gea.app.helprequest.dto;
+package com.gea.app.helpRequest.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,8 +11,8 @@ public class HelpRequestCreateRequestDTO {
     @NotNull(message = "requesterId cannot be null")
     private UUID requesterId;
 
-    @NotNull(message = "unitId cannot be null")
-    private UUID unitId;
+    @NotNull(message = "unitTypeId cannot be null")
+    private UUID targetUnitTypeId;
 
     @NotBlank(message = "Details cannot be blank")
     private String details;

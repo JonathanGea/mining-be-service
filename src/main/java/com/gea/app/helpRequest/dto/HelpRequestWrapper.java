@@ -1,4 +1,4 @@
-package com.gea.app.helprequest.dto;
+package com.gea.app.helpRequest.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
