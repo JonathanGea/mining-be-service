@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WS Test - Help Requests by UnitType</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+    label { font-weight: 600; }
+    input[type=text] { width: 420px; padding: 6px 8px; }
+    button { padding: 6px 10px; cursor: pointer; }
+    .status { font-size: 0.95rem; }
+    .ok { color: #0b7a0b; }
+    .warn { color: #b36b00; }
+    .err { color: #b00020; }
+    #messages { border: 1px solid #ddd; padding: 10px; height: 260px; overflow: auto; background: #fafafa; }
+    .msg { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; padding: 6px; border-bottom: 1px dashed #e5e5e5; }
+    .msg time { color: #666; margin-right: 8px; }
+  </style>
+  <!-- Optional: STOMP client via CDN (will fallback to raw STOMP frames if blocked) -->
+  <script src="https://unpkg.com/@stomp/stompjs@7.0.0/umd/stomp.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/umd/stomp.umd.min.js"></script>
+</head>
+<body>
+  <h2>Help Request WebSocket Test</h2>
+
+  <div class="row">
+    <label for="brokerUrl">Broker URL</label>
+    <input id="brokerUrl" type="text" value="ws://localhost:8080/ws" />
+    <span id="connStatus" class="status warn">disconnected</span>
+  </div>
+
+  <div class="row">
+    <label for="unitTypeId">unitTypeId</label>
+    <input id="unitTypeId" type="text" placeholder="UUID unitType" />
+    <button id="btnConnect">Connect & Subscribe</button>
+    <button id="btnDisconnect" disabled>Disconnect</button>
+    <button id="btnClear">Clear Messages</button>
+  </div>
+
+  <div class="row">
+    <small>Subscribes to destination: <code id="destPreview">/topic/help-requests/{unitTypeId}</code></small>
+  </div>
+
+  <h3>Messages</h3>
+  <div id="messages" aria-live="polite"></div>
+
+  <script>
+    let client = null;          // STOMP client (if library available)
+    let subscription = null;    // STOMP subscription
+    let ws = null;              // Raw WebSocket (fallback when STOMP lib unavailable)
+    let rawConnected = false;   // Raw STOMP connected state
+    let rawSubId = 'sub-1';
+
+    const $ = (id) => document.getElementById(id);
+    const $status = $("connStatus");
+    const $btnConnect = $("btnConnect");
+    const $btnDisconnect = $("btnDisconnect");
+    const $btnClear = $("btnClear");
+    const $brokerUrl = $("brokerUrl");
+    const $unitTypeId = $("unitTypeId");
+    const $messages = $("messages");
+    const $destPreview = $("destPreview");
+
+    function setStatus(text, cls) {
+      $status.textContent = text;
+      $status.className = `status ${cls||''}`.trim();
+    }
+
+    function appendMsg(text) {
+      const div = document.createElement('div');
+      div.className = 'msg';
+      const t = document.createElement('time');
+      t.textContent = new Date().toLocaleTimeString();
+      div.appendChild(t);
+      div.appendChild(document.createTextNode(' ' + text));
+      $messages.appendChild(div);
+      $messages.scrollTop = $messages.scrollHeight;
+    }
+
+    function destinationFor(unitTypeId) {
+      return `/topic/help-requests/${unitTypeId}`;
+    }
+
+    function updateDestPreview() {
+      const id = $unitTypeId.value.trim() || '{unitTypeId}';
+      $destPreview.textContent = destinationFor(id);
+    }
+
+    $unitTypeId.addEventListener('input', updateDestPreview);
+    updateDestPreview();
+
+    function resolveStompNS() {
+      // Try UMD namespaces; return null if not loaded
+      return (window && (window.StompJs || window.Stomp)) || null;
+    }
+
+    function buildFrame(command, headers = {}, body = '') {
+      let lines = [command];
+      for (const k of Object.keys(headers)) {
+        lines.push(`${k}:${headers[k]}`);
+      }
+      lines.push('');
+      lines.push(body || '');
+      return lines.join('\n') + '\0';
+    }
+
+    function parseFrames(buffer) {
+      // Split by NULL terminator, drop empty segments
+      const frames = buffer.split('\0').filter(Boolean);
+      return frames.map(seg => {
+        const parts = seg.split('\n\n');
+        const headerBlock = parts[0] || '';
+        const body = parts.slice(1).join('\n\n');
+        const headerLines = headerBlock.split('\n');
+        const command = headerLines.shift() || '';
+        const headers = {};
+        for (const line of headerLines) {
+          const idx = line.indexOf(':');
+          if (idx > -1) {
+            headers[line.slice(0, idx)] = line.slice(idx + 1);
+          }
+        }
+        return { command, headers, body };
+      });
+    }
+
+    function connectAndSubscribe() {
+      const url = $brokerUrl.value.trim();
+      const unitTypeId = $unitTypeId.value.trim();
+      if (!unitTypeId) {
+        alert('Mohon isi unitTypeId (UUID)');
+        return;
+      }
+      const StompNS = resolveStompNS();
+      if (StompNS) {
+        // Preferred: use STOMP library if available
+        try { client?.deactivate?.(); } catch {}
+        client = new StompNS.Client({
+          brokerURL: url,
+          reconnectDelay: 3000,
+          debug: (str) => console.debug('[STOMP]', str)
+        });
+
+        client.onConnect = () => {
+          setStatus('connected', 'ok');
+          $btnConnect.disabled = true;
+          $btnDisconnect.disabled = false;
+          const dest = destinationFor(unitTypeId);
+          appendMsg(`Connected. Subscribing to ${dest}`);
+          subscription = client.subscribe(dest, (message) => {
+            appendMsg(message.body);
+          });
+        };
+
+        client.onStompError = (frame) => {
+          setStatus('stomp error', 'err');
+          appendMsg(`STOMP error: ${frame.headers['message'] || ''} | ${frame.body || ''}`);
+        };
+
+        client.onWebSocketClose = (evt) => {
+          setStatus('disconnected', 'warn');
+          $btnConnect.disabled = false;
+          $btnDisconnect.disabled = true;
+          appendMsg('WebSocket closed');
+        };
+
+        client.activate();
+        setStatus('connecting...', 'warn');
+        return;
+      }
+
+      // Fallback: raw STOMP over WebSocket (no external libs)
+      try { ws?.close?.(); } catch {}
+      ws = new WebSocket(url);
+      ws.onopen = () => {
+        setStatus('connecting...', 'warn');
+        const connectFrame = buildFrame('CONNECT', {
+          'accept-version': '1.2',
+          host: location.host
+        });
+        ws.send(connectFrame);
+      };
+      ws.onclose = () => {
+        setStatus('disconnected', 'warn');
+        $btnConnect.disabled = false;
+        $btnDisconnect.disabled = true;
+        rawConnected = false;
+        appendMsg('WebSocket closed');
+      };
+      ws.onerror = (e) => {
+        setStatus('ws error', 'err');
+        appendMsg('WebSocket error');
+      };
+      ws.onmessage = (evt) => {
+        const data = typeof evt.data === 'string' ? evt.data : '';
+        for (const frame of parseFrames(data)) {
+          if (frame.command === 'CONNECTED') {
+            rawConnected = true;
+            setStatus('connected', 'ok');
+            $btnConnect.disabled = true;
+            $btnDisconnect.disabled = false;
+            const dest = destinationFor(unitTypeId);
+            appendMsg(`Connected. Subscribing to ${dest}`);
+            const subFrame = buildFrame('SUBSCRIBE', { id: rawSubId, destination: dest });
+            ws.send(subFrame);
+          } else if (frame.command === 'MESSAGE') {
+            appendMsg(frame.body || '');
+          } else if (frame.command === 'ERROR') {
+            setStatus('stomp error', 'err');
+            appendMsg(`ERROR: ${frame.headers['message'] || ''} | ${frame.body || ''}`);
+          }
+        }
+      };
+    }
+
+    function disconnect() {
+      // Library path
+      try { subscription?.unsubscribe?.(); } catch {}
+      subscription = null;
+      if (client) {
+        client.deactivate();
+        client = null;
+      }
+      // Raw path
+      if (ws) {
+        try {
+          if (rawConnected) {
+            ws.send(buildFrame('UNSUBSCRIBE', { id: rawSubId }));
+            ws.send(buildFrame('DISCONNECT'));
+          }
+        } catch {}
+        try { ws.close(); } catch {}
+        ws = null;
+        rawConnected = false;
+      }
+      setStatus('disconnected', 'warn');
+      $btnConnect.disabled = false;
+      $btnDisconnect.disabled = true;
+      appendMsg('Disconnected');
+    }
+
+    function clearMessages() {
+      $messages.innerHTML = '';
+    }
+
+    $btnConnect.addEventListener('click', connectAndSubscribe);
+    $btnDisconnect.addEventListener('click', disconnect);
+    $btnClear.addEventListener('click', clearMessages);
+  </script>
+</body>
+</html>
